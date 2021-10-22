@@ -27,10 +27,51 @@ client.on('connect', function() {
     console.log('connected');
 });
 
+
+
 //IMPORTAR HTML
 app.get('/',function(req,res){
+    cargar_personajes();
     res.sendFile(path.join(__dirname+'/index.html'));
 });
+
+
+async function cargar_personajes(){
+    // Search Data in Redis
+    const reply = await GET_ASYNC("character");
+
+    // if exists returns from redis and finish with response
+    if (reply) return res.send(JSON.parse(reply));
+
+    // Fetching Data from Rick and Morty API
+    const response = await axios.get(
+        "https://rickandmortyapi.com/api/character"
+    );
+
+    // Saving the results in Redis. The "EX" and 10, sets an expiration of 10 Seconds
+    const saveResult = await SET_ASYNC(
+        "character",
+        JSON.stringify(response.data),
+        "EX",
+        10
+    );
+
+    // resond to client
+    for(let i=0;i<20;i++){
+    var name = response.data.results[i].name;
+    var imagen = response.data.results[i].image;
+    var numero_random = Math.floor(Math.random() * (3 - 0));
+    var id = 'presonaje:' + i;
+
+    //HASH 
+    client.hset(id, 'nombre', name);
+    client.hset(id, 'vida', 100);
+    client.hset(id, 'muertes', 0);
+    client.hset(id, 'imagen', imagen);
+    client.hset(id, 'grupo_armas', numero_random);
+    client.hset(id, 'arma_catual', 0);
+    }
+}
 
 //INICIALIZACIÓN BASE DE DATOS RICKY MORTY
 // Get all characters
@@ -80,13 +121,8 @@ app.get("/character", async (req, res, next) => {
 for(var i=0;i<7;i++){
     var arma = 'arma:' + i;
     client.hset(arma, 'name', 'perfectchuck');
-    //client.hset('player1', 'email', 'perfecthuck@gmail.com');
-    //client.hset('player1', 'kills', 10);
 }
 
-
-//INICIALIZAR ITINERARIOS
-//client.sadd('grupo_armas', 'weapon1', 'weapon2', 'weapon3');
 
 //HASH 
 client.hset('player1', 'name', 'perfectchuck');
