@@ -39,7 +39,7 @@ app.get('/',function(req,res){
     cargar_personajes(); 
     f_itinerario();
     armas();
-    res.sendFile(path.join(__dirname+'/index.html'));
+    res.sendFile(path.join(__dirname+'/ui/index.html'));
 });
 
 
@@ -321,6 +321,7 @@ app.get("/character", async (req, res, next) => {
 
 //EXISTS
 app.get('/exists/:id', function(req, res) {
+    console.log("Peticio rebuda");
     if (client.exists(req.params.id,  function(err, reply) {
         if (reply == 1) {
             res.send('exists');

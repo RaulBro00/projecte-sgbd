@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Express API with P5.js</title>
+    <style type="text/css">
+        div{
+            text-align: center;
+            margin: 50px;
+        }
+
+        input{
+            border: 1px solid black;
+            margin-right: 20px;
+            height: 30px;
+        }
+
+        #divTable.table{
+            border: 1px solid black;
+            width: 500px;
+            margin: auto;
+        }
+
+        th,td{
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+    <!-- p5 libraries -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+    <!-- your p5 sketch -->
+    <script type="text/javascript" src="sketch.js"></script>
+</head>
+
+<body>
+    <!-- Primer contingut del html 
+        <h1>Simple CRUD API with Express</h1>
+        <ul>
+            <li>🖌 Change colors: press any key + click on the dot </li>
+            <li>🔥 Remove a dot: click on the dot </li>
+        </ul>
+    -->
+    <!-- sample table: https://programmerclick.com/article/29291494605/ -->
+
+    <div>
+        <input type="text" id="id" placeholder="Por favor ingrese un nombre de usuario">
+        <script type="module">
+            const API_URL = "http://localhost:3000"
+            const xhr = new XMLHttpRequest();
+
+            function onRequestHandler(){
+                if(this.readyState ==4 && this.status == 200){
+                    console.log(this.response);
+                }
+            }
+            
+            xhr.addEventListener("load", onRequestHandler);
+            xhr.open("GET", `${API_URL}/character`);
+            xhr.send();
+
+            function test(){
+                xhr.addEventListener("load", onRequestHandler);
+                xhr.open("GET", `${API_URL}/exists/2`);
+                xhr.send();
+            }
+
+            
+/*
+            function reloadData(){
+                // RUTA = "https://jsonplaceholder.typicode.com/users";
+                const request = require("request-promise");
+                request({
+                    uri: "http://localhost:3000/exists/1",
+                    json: true, // Para que lo decodifique automáticamente 
+                }).then(response => {
+                    //usuarios.forEach(usuario => {
+                    //    console.log(`Tenemos a un usuario llamado ${usuario.name} con correo ${usuario.email}`);
+                    //})
+                   console.log(response);
+                });
+            }*/
+        </script>
+        <script type="text/javascript">
+            function init(){
+                initializeTable()
+                var i = 0;
+                var myInt = setInterval( function(){
+                    
+                    if(i<200){
+                        clearInterval(myInt);
+                    }else{
+                        reloadData();
+                        i++;
+                    }
+                }, 1000);
+            }
+
+            // Bucle inicial per generar taula
+            function initializeTable(){
+                div = document.getElementById('divTable');
+                div.style.display = '';
+                test();
+            // sfor(var i=0; i<10; i++){
+
+            // s}
+
+            }
+            function reloadData(){}
+
+            const API_URL = "http://localhost:3000"
+            const xhr = new XMLHttpRequest();
+
+            function onRequestHandler(){
+                if(this.readyState ==4 && this.status == 200){
+                    console.log(this.response);
+                }
+            }
+            
+            xhr.addEventListener("load", onRequestHandler);
+            xhr.open("GET", `${API_URL}/character`);
+            xhr.send();
+
+        </script>
+        <input type="button" value="Jugar" onclick="init()">
+    </div>
+
+    <div id="divTable" style="display: none;">
+        <table>
+            <caption>Formulario de información del estudiante</caption>
+            <tr>
+                <th>Posicion</th>
+                <th>Nombre</th>
+                <th>género</th>
+                <th>operando</th>
+            </tr>
+    
+            <tr>
+                <td>01</td>
+                <td>Caballo de gato</td>
+                <td>masculino</td>
+                <td><a href="javascript:void(0);" onclick="del_tr(this);">Eliminar</a></td>
+            </tr>
+    
+            <tr>
+                <td>02</td>
+                <td>Hua Mulan</td>
+                <td>Hembra</td>
+                <td><a href="javascript:void(0);" onclick="del_tr(this);">Eliminar</a></td>
+            </tr>
+    
+            <tr>
+                <td>03</td>
+                <td>Rey Mono</td>
+                <td>masculino</td>
+                <td><a href="javascript:void(0);" onclick="del_tr(this);">Eliminar</a></td>
+            </tr>
+    
+        </table>
+    </div>
+    
+    
+</body>
+</html>
